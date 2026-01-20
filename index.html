@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1下B第16課：數數方法</title>
+    <style>
+        /* == 全局設定 (iPad 優化) == */
+        body {
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+            background-color: #eef9fd; /* 柔和的淺藍底 */
+            color: #333;
+            padding: 15px;
+            text-align: center;
+            /* 防止 iPad 上雙擊縮放 */
+            touch-action: manipulation;
+        }
+
+        h1 { color: #0277bd; margin-bottom: 10px; font-size: 1.8rem; }
+        
+        /* 題目標題樣式 */
+        .section-title { 
+            color: #fff; 
+            background: #039be5; 
+            padding: 12px 25px; 
+            border-radius: 25px; 
+            font-size: 1.3rem; 
+            display: inline-block; 
+            margin-top: 35px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 0 #01579b;
+        }
+
+        /* == 容器樣式 == */
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 10px auto;
+            border: 4px solid #81d4fa;
+            position: relative;
+        }
+
+        /* 按鈕樣式 (大按鈕適合觸控) */
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 50px;
+            color: white;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            margin: 8px;
+            transition: transform 0.1s;
+            box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+            font-family: inherit;
+        }
+        button:active { transform: translateY(5px); box-shadow: none; }
+        
+        /* 輸入框樣式 */
+        input[type="number"] {
+            font-size: 1.4rem;
+            padding: 8px;
+            width: 85px;
+            text-align: center;
+            border: 3px solid #b3e5fc;
+            border-radius: 12px;
+            margin: 0 5px;
+        }
+
+        /* 填空題底線樣式 */
+        .fill-blank {
+            border: none !important;
+            border-bottom: 4px solid #555 !important;
+            border-radius: 0 !important;
+            background-color: #f9f9f9;
+            width: 75px;
+            color: #d84315;
+            font-weight: bold;
+        }
+
+        /* 回饋訊息 */
+        .feedback { font-size: 1.5rem; font-weight: bold; margin-top: 20px; min-height: 1.5em; padding: 10px; border-radius: 10px;}
+        .correct { color: #2e7d32; background-color: #e8f5e9; }
+        .wrong { color: #c62828; background-color: #ffebee;}
+
+        /* 愛心基礎樣式 */
+        .heart { color: #f44336; font-size: 2rem; line-height: 1; margin: 3px;}
+
+        /* == 第1題樣式 == */
+        .btn-p1-action { background-color: #00bcd4; }
+        .btn-p1-group { background-color: #ff9800; }
+
+        #display-p1 {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            min-height: 130px;
+            background-color: #fffde7;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
+
+        /* 實線藍框 (完整的組) */
+        .group-box {
+            border: 4px solid #2196f3;
+            border-radius: 15px;
+            padding: 8px;
+            background: #e3f2fd;
+            display: flex;
+            align-items: center;
+        }
+        
+        /* 虛線灰框 (多出來的) */
+        .remainder-box {
+            border: 4px dashed #9e9e9e;
+            border-radius: 15px;
+            padding: 8px;
+            background: #f5f5f5;
+            position: relative;
+            margin-left: 15px;
+        }
+        .remainder-box::after { content: "多出來的"; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-size: 1rem; color: #757575; white-space: nowrap; font-weight: bold;}
+
+        /* == 第2題樣式 (不重疊散亂排列) == */
+        .btn-p2-start { background-color: #9c27b0; }
+        .btn-p2-check { background-color: #4caf50; }
+
+        #display-p2 {
+            position: relative; /* 關鍵：讓愛心絕對定位 */
+            height: 350px;      /* 固定高度，適合 10-40 個愛心 */
+            background-color: #fff8e1; 
+            border-radius: 15px;
+            margin: 20px 0;
+            border: 4px solid #ffecb3;
+            overflow: hidden;   /* 防止跑出框外 */
+        }
+
+        .scattered-heart {
+            position: absolute; 
+            color: #e91e63;
+            font-size: 2.4rem; /* 愛心大一點 */
+            line-height: 1;
+            user-select: none;
+            /* 加上陰影增加立體感，更容易辨識 */
+            filter: drop-shadow(2px 2px 1px rgba(0,0,0,0.1));
+        }
+
+        /* 作答區文字大小 */
+        .answer-text { font-size: 1.5rem; line-height: 2.8rem; }
+
+    </style>
+</head>
+<body>
+
+    <h1>1下B第16課：數數方法</h1>
+    <p style="font-size: 1.1rem;">請準備好你的 iPad，一起來數數看！</p>
+
+    <div class="section-title">第 1 題：分組數數看</div>
+    
+    <div class="container">
+        <p style="font-size: 1.3rem;">1. 請輸入數量 (30-99)：</p>
+        <div style="margin-bottom: 20px;">
+            <input type="number" id="p1-input" min="30" max="99" placeholder="輸入數字">
+            <button class="btn-p1-action" onclick="p1_init()">生成愛心</button>
+        </div>
+
+        <div id="p1-controls" style="display:none; border-top: 3px dashed #b2ebf2; padding-top:20px;">
+            <p style="font-size: 1.3rem;">2. 選一個按鈕，把圖案圈起來：</p>
+            <button class="btn-p1-group" onclick="p1_group(2)">每 2 個一數</button>
+            <button class="btn-p1-group" onclick="p1_group(5)">每 5 個一數</button>
+            <button class="btn-p1-group" onclick="p1_group(10)">每 10 個一數</button>
+        </div>
+
+        <div id="display-p1" style="display:none;"></div>
+
+        <div id="p1-answer-area" style="display:none; background:#e1f5fe; padding:25px; border-radius:15px; margin-top: 20px;">
+            <p style="font-size: 1.3rem;">3. 看圖填填看：</p>
+            <p class="answer-text">
+                有 <input type="number" id="p1-ans-groups" class="fill-blank" inputmode="numeric"> 個 
+                <input type="number" id="p1-ans-size" class="fill-blank" inputmode="numeric"> 
+                ，<br>
+                多 <input type="number" id="p1-ans-remain" class="fill-blank" inputmode="numeric">
+            </p>
+            <button class="btn-p1-action" onclick="p1_check()">檢查答案</button>
+            <div id="p1-feedback" class="feedback"></div>
+        </div>
+    </div>
+
+    <div class="section-title">第 2 題：估算大考驗</div>
+
+    <div class="container" style="border-color: #ce93d8;">
+        <p style="font-size:1.3rem;">
+            這裡的圖案很亂，<b>請用眼睛看一看，猜猜看大概有多少？</b><br>(不用一個一個數喔！)
+        </p>
+        <button class="btn-p2-start" onclick="p2_start()">開始出題 (10-40個)</button>
+
+        <div id="display-p2">
+            <p style="color:#aaa; position: absolute; top: 45%; width: 100%; font-size: 1.2rem;">準備好了嗎？按上面的紫色按鈕！</p>
+        </div>
+
+        <div id="p2-answer-area" style="display:none;">
+            <p class="answer-text">
+                我以每 <input type="number" id="p2-est-base" class="fill-blank" inputmode="numeric"> 個一數估計，<br>
+                估計這裡有心形圖案 <input type="number" id="p2-est-total" class="fill-blank" inputmode="numeric"> 個。
+            </p>
+            <button class="btn-p2-check" onclick="p2_check()">我估計好了！</button>
+            <div id="p2-feedback" class="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        // 輔助：防止 iPad 輸入框自動放大
+        const inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            });
+        });
+
+        /* ==================== 第 1 題 邏輯 ==================== */
+        let p1_total = 0;
+        let p1_groupSize = 0;
+
+        function p1_init() {
+            const val = parseInt(document.getElementById('p1-input').value);
+            if (isNaN(val) || val < 30 || val > 99) {
+                alert("請輸入 30 到 99 之間的數字喔！");
+                return;
+            }
+            p1_total = val;
+            
+            document.getElementById('p1-controls').style.display = 'block';
+            document.getElementById('display-p1').style.display = 'flex';
+            document.getElementById('p1-answer-area').style.display = 'none';
+            document.getElementById('p1-feedback').innerHTML = '';
+            
+            const display = document.getElementById('display-p1');
+            display.innerHTML = '';
+            // 初始顯示為散亂
+            for(let i=0; i<p1_total; i++){
+                display.innerHTML += '<span class="heart" style="margin:5px">❤</span>';
+            }
+        }
+
+        function p1_group(size) {
+            p1_groupSize = size;
+            const display = document.getElementById('display-p1');
+            display.innerHTML = '';
+
+            const groups = Math.floor(p1_total / size);
+            const remainder = p1_total % size;
+
+            // 畫實線框 (組)
+            for(let i=0; i<groups; i++) {
+                const box = document.createElement('div');
+                box.className = 'group-box';
+                for(let j=0; j<size; j++) {
+                    box.innerHTML += '<span class="heart">❤</span>';
+                }
+                display.appendChild(box);
+            }
+
+            // 畫虛線框 (多)
+            if(remainder > 0) {
+                const box = document.createElement('div');
+                box.className = 'remainder-box';
+                for(let k=0; k<remainder; k++) {
+                    box.innerHTML += '<span class="heart">❤</span>';
+                }
+                display.appendChild(box);
+            }
+
+            document.getElementById('p1-answer-area').style.display = 'block';
+            document.getElementById('p1-ans-groups').value = '';
+            document.getElementById('p1-ans-size').value = '';
+            document.getElementById('p1-ans-remain').value = '';
+            
+            document.getElementById('p1-ans-groups').focus();
+            document.getElementById('p1-feedback').innerHTML = '';
+        }
+
+        function p1_check() {
+            const uGroup = parseInt(document.getElementById('p1-ans-groups').value);
+            const uSize = parseInt(document.getElementById('p1-ans-size').value);
+            const uRemain = parseInt(document.getElementById('p1-ans-remain').value);
+            const feedback = document.getElementById('p1-feedback');
+
+            const correctGroups = Math.floor(p1_total / p1_groupSize);
+            const correctRemain = p1_total % p1_groupSize;
+
+            if (isNaN(uGroup) || isNaN(uSize) || isNaN(uRemain)) {
+                feedback.innerHTML = "<span style='color:orange'>還有格子沒填完喔！</span>";
+                return;
+            }
+
+            if (uSize !== p1_groupSize) {
+                feedback.className = "feedback wrong";
+                feedback.innerHTML = "❌ 中間那格是「每幾個一數」？看看你按了哪個按鈕。";
+            } else if (uGroup !== correctGroups) {
+                feedback.className = "feedback wrong";
+                feedback.innerHTML = "❌ 「有幾個」填錯了，數數看藍色的實線框框有幾個？";
+            } else if (uRemain !== correctRemain) {
+                feedback.className = "feedback wrong";
+                feedback.innerHTML = "❌ 「多幾個」填錯了，數數看灰色虛線框裡有幾個？";
+            } else {
+                feedback.className = "feedback correct";
+                feedback.innerHTML = "🎉 答對了！你真棒！";
+            }
+        }
+
+        /* ==================== 第 2 題 邏輯 (防重疊亂數排列) ==================== */
+        let p2_actualTotal = 0;
+
+        function p2_start() {
+            // 1. 設定範圍 10 ~ 40
+            p2_actualTotal = Math.floor(Math.random() * (40 - 10 + 1)) + 10;
+            
+            const display = document.getElementById('display-p2');
+            display.innerHTML = ''; // 清空畫布
+            document.getElementById('p2-answer-area').style.display = 'block';
+            document.getElementById('p2-feedback').className = "feedback";
+            document.getElementById('p2-feedback').innerHTML = '';
+            document.getElementById('p2-est-base').value = '';
+            document.getElementById('p2-est-total').value = '';
+
+            const W = display.offsetWidth;
+            const H = display.offsetHeight;
+            const heartSize = 50; // 愛心碰撞體積估算
+            const placedHearts = [];
+
+            // 2. 放置愛心演算法
+            for(let i=0; i<p2_actualTotal; i++) {
+                let x, y, overlap;
+                let attempts = 0;
+
+                // 嘗試找到不重疊的位置
+                do {
+                    overlap = false;
+                    x = Math.random() * (W - heartSize - 20) + 10;
+                    y = Math.random() * (H - heartSize - 20) + 10;
+
+                    for (let pos of placedHearts) {
+                        const dx = x - pos.x;
+                        const dy = y - pos.y;
+                        const distance = Math.sqrt(dx*dx + dy*dy);
+                        if (distance < heartSize + 10) { // +10 確保有空隙
+                            overlap = true;
+                            break;
+                        }
+                    }
+                    attempts++;
+                } while(overlap && attempts < 150); // 防止死循環
+
+                placedHearts.push({x: x, y: y});
+
+                const heart = document.createElement('div');
+                heart.className = 'scattered-heart';
+                heart.innerHTML = '❤';
+                heart.style.left = x + 'px';
+                heart.style.top = y + 'px';
+                // 隨機微幅旋轉，增加自然感
+                const rot = Math.floor(Math.random() * 60) - 30;
+                heart.style.transform = `rotate(${rot}deg)`;
+
+                display.appendChild(heart);
+            }
+            // 聚焦到作答區
+            document.getElementById('p2-est-base').focus();
+        }
+
+        function p2_check() {
+            const base = parseInt(document.getElementById('p2-est-base').value);
+            const estimate = parseInt(document.getElementById('p2-est-total').value);
+            const feedback = document.getElementById('p2-feedback');
+
+            if (isNaN(base) || isNaN(estimate)) {
+                feedback.innerHTML = "<span style='color:orange'>請填寫你是怎麼估計的喔！</span>";
+                feedback.className = "feedback";
+                return;
+            }
+
+            const diff = Math.abs(estimate - p2_actualTotal);
+
+            // 合理估計：誤差 4 以內
+            if (diff <= 4) {
+                feedback.className = "feedback correct";
+                feedback.innerHTML = `🎉 估計得很合理！<br>實際有 ${p2_actualTotal} 個，你的估計很棒！`;
+            } else {
+                feedback.className = "feedback wrong";
+                feedback.innerHTML = `再試著估計看看？<br>實際有 ${p2_actualTotal} 個，這次差得有點多喔。`;
+            }
+        }
+    </script>
+</body>
+</html>
